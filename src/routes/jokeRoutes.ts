@@ -1,5 +1,7 @@
 import express from 'express';
 import { JokeController } from '../controllers/jokeControllers';
+import { createJokeLimiter } from '../middlewares/security';
+import { validateCreateJoke, validateJokeId } from '../middlewares/validation';
 
 const router = express.Router();
 
@@ -105,7 +107,7 @@ router.get('/random', JokeController.getRandomJoke);
  *       400:
  *         description: Invalid ID
  */
-router.get('/:id', JokeController.getJokeById);
+router.get('/:id',validateJokeId, JokeController.getJokeById);
 
 /**
  * @swagger
@@ -135,6 +137,6 @@ router.get('/:id', JokeController.getJokeById);
  *       400:
  *         description: Invalid input
  */
-router.post('/', JokeController.createJoke);
+router.post('/', createJokeLimiter,validateCreateJoke, JokeController.createJoke);
 
 export default router;

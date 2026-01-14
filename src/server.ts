@@ -1,11 +1,13 @@
 import cors from 'cors';
 import dotenv from 'dotenv';
 import express from 'express';
+import helmet from 'helmet';
 import swaggerUi from 'swagger-ui-express';
 import { connectDatabase } from './config/database';
+import { logger } from './config/logger';
 import { swaggerSpec } from './config/swagger';
+import { apiLimiter } from './middlewares/security';
 import jokeRoutes from './routes/jokeRoutes';
-
 dotenv.config();
 
 const app = express();
@@ -13,6 +15,8 @@ const PORT = process.env.PORT || 3000;
 const API_VERSION = process.env.API_VERSION || 'v1';
 
 // Middlewares
+app.use(helmet());// Sécurité headers
+app.use('/api/', apiLimiter);// Rate limiting global
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -44,8 +48,8 @@ const startServer = async () => {
   await connectDatabase();
   
   app.listen(PORT, () => {
-    console.log(`🚀 Server running on http://localhost:${PORT}`);
-    console.log(`📡 API: http://localhost:${PORT}/api/${API_VERSION}/jokes`);
+    logger.info(`🚀 Server running on http://localhost:${PORT}`);
+    logger.info(`📡 API: http://localhost:${PORT}/api/${API_VERSION}/jokes`);
   });
 };
 

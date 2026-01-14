@@ -1,4 +1,5 @@
 import { sequelize } from '../config/database';
+import { logger } from '../config/logger';
 import JokeModel from '../models/joke';
 
 const jokes = [
@@ -47,13 +48,13 @@ const jokes = [
 const seedDatabase = async () => {
   try {
     await sequelize.authenticate();
-    console.log('✅ Database connected');
+    logger.info('✅ Database connected');
     
     await sequelize.sync({ force: true });
-    console.log('✅ Tables created');
+    logger.info('✅ Tables created');
     
     await JokeModel.bulkCreate(jokes);
-    console.log(`✅ ${jokes.length} jokes inserted`);
+    logger.info(`✅ ${jokes.length} jokes inserted`);
     
     process.exit(0);
   } catch (error) {

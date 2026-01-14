@@ -1,5 +1,6 @@
 import dotenv from 'dotenv';
 import { Sequelize } from 'sequelize';
+import { logger } from './logger';
 
 dotenv.config();
 
@@ -12,10 +13,10 @@ const sequelize = new Sequelize({
 export const connectDatabase = async (): Promise<void> => {
   try {
     await sequelize.authenticate();
-    console.log('Connection has been established successfully.');
+    logger.info('Connection has been established successfully.');
 
     await sequelize.sync({ alter: true });
-    console.log('All models were synchronized successfully.');
+    logger.info('All models were synchronized successfully.');
   } catch (error) {
     console.error('Unable to connect to the database:', error);
     process.exit(1);
