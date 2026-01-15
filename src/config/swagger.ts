@@ -14,7 +14,7 @@ const options = {
     description: 'Development server'
   },
   {
-    url: 'https://ton-url-render.onrender.com', //TODO; a changer par l'url de production
+    url: 'https://carambar-api-pepi.onrender.com/api-docs/',
     description: 'Production server'
   }
 ],
