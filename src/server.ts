@@ -20,9 +20,7 @@ const API_VERSION = process.env.API_VERSION || 'v1';
 
 // CORS configuration
 const corsOptions = {
-  origin: process.env.NODE_ENV === 'production' 
-    ? ['https://ton-front.github.io'] //TODO: update with production URL
-    : ['http://localhost:5173', 'http://localhost:3000'],
+  origin: true,
   credentials: true,
   optionsSuccessStatus: 200
 };
