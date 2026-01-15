@@ -1,26 +1,40 @@
+import compression from 'compression';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import express from 'express';
 import helmet from 'helmet';
 import swaggerUi from 'swagger-ui-express';
 import { connectDatabase } from './config/database';
-import { logger } from './config/logger';
 import { swaggerSpec } from './config/swagger';
+import { errorHandler } from './middlewares/errorHandler';
 import { apiLimiter } from './middlewares/security';
+import JokeModel from './models/joke';
 import jokeRoutes from './routes/jokeRoutes';
+import { joke } from './utils/jokeData';
+
 dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 const API_VERSION = process.env.API_VERSION || 'v1';
 
+// CORS configuration
+const corsOptions = {
+  origin: process.env.NODE_ENV === 'production' 
+    ? ['https://ton-front.github.io'] //TODO: update with production URL
+    : ['http://localhost:5173', 'http://localhost:3000'],
+  credentials: true,
+  optionsSuccessStatus: 200
+};
+
 // middlewares
 app.use(helmet());// header security
 app.use('/api/', apiLimiter);// Rate limiting global
-app.use(cors());
+app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
+app.use(compression());
+app.use(errorHandler);
 // Health-check (check if server is running)
 /**
  * @swagger
@@ -68,9 +82,17 @@ app.use((req, res) => {
 const startServer = async () => {
   await connectDatabase();
   
+  // Auto-seed si BDD vide
+  const jokeCount = await JokeModel.count();
+  if (jokeCount === 0) {
+    console.log('🌱 Database empty, seeding with initial jokes...');
+    await JokeModel.bulkCreate(joke);
+    console.log(`✅ ${joke.length} jokes inserted automatically`);
+  }
+  
   app.listen(PORT, () => {
-    logger.info(`🚀 Server running on http://localhost:${PORT}`);
-    logger.info(`📡 API: http://localhost:${PORT}/api/${API_VERSION}/jokes`);
+    console.log(`🚀 Server running on http://localhost:${PORT}`);
+    console.log(`📡 API: http://localhost:${PORT}/api/${API_VERSION}/jokes`);
   });
 };
 
