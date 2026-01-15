@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import { body, param, validationResult } from 'express-validator';
 
-// Middleware pour vérifier les erreurs de validation
+// middleware to handle validation errors
 export const handleValidationErrors = (
   req: Request,
   res: Response,
@@ -21,7 +21,7 @@ export const handleValidationErrors = (
   next();
 };
 
-// Règles de validation pour créer une blague
+// validation rule to create a new joke
 export const validateCreateJoke = [
   body('question')
     .trim()
@@ -36,7 +36,7 @@ export const validateCreateJoke = [
   handleValidationErrors
 ];
 
-// Validation pour l'ID dans les params
+// validation rule for joke ID parameter
 export const validateJokeId = [
   param('id')
     .isInt({ min: 1 }).withMessage('ID must be a positive integer'),

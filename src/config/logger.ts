@@ -27,7 +27,7 @@ const format = winston.format.combine(
 );
 
 const transports = [
-  new winston.transports.Console(),
+  new winston.transports.Console({ format }),
   new winston.transports.File({
     filename: 'logs/error.log',
     level: 'error',
@@ -38,6 +38,5 @@ const transports = [
 export const logger = winston.createLogger({
   level: process.env.NODE_ENV === 'development' ? 'debug' : 'warn',
   levels: logLevels,
-  format,
   transports,
 });

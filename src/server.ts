@@ -14,14 +14,36 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 const API_VERSION = process.env.API_VERSION || 'v1';
 
-// Middlewares
-app.use(helmet());// Sécurité headers
+// middlewares
+app.use(helmet());// header security
 app.use('/api/', apiLimiter);// Rate limiting global
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Health-check (pour vérifier que le serveur tourne)
+// Health-check (check if server is running)
+/**
+ * @swagger
+ * /health:
+ *   get:
+ *     summary: Health check endpoint
+ *     tags: [Health]
+ *     description: Check if the API server is running
+ *     responses:
+ *       200:
+ *         description: Server is healthy and running
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: "Server is running"
+ */
 app.get('/health', (req, res) => {
   res.status(200).json({
     success: true,
@@ -32,7 +54,7 @@ app.get('/health', (req, res) => {
 // Swagger API documentation
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
-// Routes API
+// Routes for jokes api
 app.use(`/api/${API_VERSION}/jokes`, jokeRoutes);
 
 // 404 handler
@@ -43,7 +65,6 @@ app.use((req, res) => {
   });
 });
 
-// Démarrer le serveur
 const startServer = async () => {
   await connectDatabase();
   
