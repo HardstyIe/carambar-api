@@ -14,12 +14,12 @@ const options = {
     description: 'Development server'
   },
   {
-    url: 'https://ton-url-render.onrender.com',  // ← Tu ajouteras ça après
+    url: 'https://ton-url-render.onrender.com', //TODO; a changer par l'url de production
     description: 'Production server'
   }
 ],
   },
-  apis: ['./src/routes/*.ts'],
+  apis: ['./src/routes/*.ts', './src/server.ts'],
 };
 
 export const swaggerSpec = swaggerJsdoc(options);
