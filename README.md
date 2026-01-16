@@ -292,13 +292,6 @@ Le script installe tout automatiquement : dépendances, build, seed, Docker.
 - **Error Handler** : Gestion centralisée des erreurs
 - **Sanitization** : Échappement des caractères HTML dangereux
 
-### Complexité des opérations
-
-- `GET /jokes/:id` → **O(1)** (lookup par clé primaire)
-- `POST /jokes` → **O(1)** (insertion unique)
-- `GET /jokes` → **O(n)** (scan complet)
-- `GET /jokes/random` → **O(n)** avec LIMIT 1
-
 ---
 
 ## 🌐 Déploiement
